@@ -1,0 +1,350 @@
+-- سكربت انترفاكس (INTERFAX) - النسخة النهائية مع حقوق المطور
+-- تصميم الهاشمي
+
+local Players = game:GetService("Players")
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local player = Players.LocalPlayer
+
+if CoreGui:FindFirstChild("InterfaxUI") then
+    CoreGui.InterfaxUI:Destroy()
+end
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "InterfaxUI"
+ScreenGui.Parent = CoreGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+local LeftHandAsset = "rbxassetid://6023426915"
+local RightHandAsset = "rbxassetid://6023426915"
+
+-- ==========================================
+-- 1. شاشة التحميل (Loading Screen)
+-- ==========================================
+local LoadingScreen = Instance.new("Frame")
+LoadingScreen.Name = "LoadingScreen"
+LoadingScreen.Size = UDim2.new(1, 0, 1, 0)
+LoadingScreen.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+LoadingScreen.ZIndex = 10
+LoadingScreen.Parent = ScreenGui
+
+local TopTitle = Instance.new("TextLabel")
+TopTitle.Size = UDim2.new(1, 0, 0, 50)
+TopTitle.Position = UDim2.new(0, 0, 0, 20)
+TopTitle.BackgroundTransparency = 1
+TopTitle.Text = "INTERFAX"
+TopTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+TopTitle.TextSize = 36
+TopTitle.Font = Enum.Font.GothamBold
+TopTitle.Parent = LoadingScreen
+
+local LoadHandsContainer = Instance.new("Frame")
+LoadHandsContainer.Size = UDim2.new(0, 400, 0, 160)
+LoadHandsContainer.Position = UDim2.new(0.5, -200, 0.4, -80)
+LoadHandsContainer.BackgroundTransparency = 1
+LoadHandsContainer.Parent = LoadingScreen
+
+local LoadLeftHand = Instance.new("ImageLabel")
+LoadLeftHand.Size = UDim2.new(0, 160, 0, 160)
+LoadLeftHand.Position = UDim2.new(0, -50, 0, 0)
+LoadLeftHand.BackgroundTransparency = 1
+LoadLeftHand.Image = LeftHandAsset
+LoadLeftHand.Parent = LoadHandsContainer
+
+local LoadRightHand = Instance.new("ImageLabel")
+LoadRightHand.Size = UDim2.new(0, 160, 0, 160)
+LoadRightHand.Position = UDim2.new(1, -110, 0, 0)
+LoadRightHand.BackgroundTransparency = 1
+LoadRightHand.Image = RightHandAsset
+LoadRightHand.Parent = LoadHandsContainer
+
+task.spawn(function()
+    while true do
+        LoadLeftHand.Position = UDim2.new(0, -50, 0, 0)
+        LoadRightHand.Position = UDim2.new(1, -110, 0, 0)
+        
+        local tw1 = TweenService:Create(LoadLeftHand, TweenInfo.new(1.5, Enum.EasingStyle.Sine), {Position = UDim2.new(0.5, -165, 0, 0)})
+        local tw2 = TweenService:Create(LoadRightHand, TweenInfo.new(1.5, Enum.EasingStyle.Sine), {Position = UDim2.new(0.5, -5, 0, 0)})
+        tw1:Play()
+        tw2:Play()
+        tw2.Completed:Wait()
+        
+        task.wait(0.5)
+        
+        local back1 = TweenService:Create(LoadLeftHand, TweenInfo.new(1.5, Enum.EasingStyle.Sine), {Position = UDim2.new(0, -50, 0, 0)})
+        local back2 = TweenService:Create(LoadRightHand, TweenInfo.new(1.5, Enum.EasingStyle.Sine), {Position = UDim2.new(1, -110, 0, 0)})
+        back1:Play()
+        back2:Play()
+        back2.Completed:Wait()
+        
+        task.wait(0.3)
+    end
+end)
+
+local StatusText = Instance.new("TextLabel")
+StatusText.Size = UDim2.new(1, 0, 0, 30)
+StatusText.Position = UDim2.new(0, 0, 0.72, -35)
+StatusText.BackgroundTransparency = 1
+StatusText.TextColor3 = Color3.fromRGB(255, 255, 255)
+StatusText.TextSize = 18
+StatusText.Font = Enum.Font.GothamBold
+StatusText.Parent = LoadingScreen
+
+local PercentText = Instance.new("TextLabel")
+PercentText.Size = UDim2.new(1, 0, 0, 25)
+PercentText.Position = UDim2.new(0, 0, 0.72, 0)
+PercentText.BackgroundTransparency = 1
+PercentText.TextColor3 = Color3.fromRGB(255, 255, 255)
+PercentText.TextSize = 16
+PercentText.Font = Enum.Font.GothamBold
+PercentText.Text = "0%"
+PercentText.Parent = LoadingScreen
+
+local LoadingBarBg = Instance.new("Frame")
+LoadingBarBg.Size = UDim2.new(0, 350, 0, 12)
+LoadingBarBg.Position = UDim2.new(0.5, -175, 0.72, 30)
+LoadingBarBg.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+LoadingBarBg.BorderSizePixel = 0
+LoadingBarBg.Parent = LoadingScreen
+
+local CornerBg = Instance.new("UICorner")
+CornerBg.CornerRadius = UDim.new(1, 0)
+CornerBg.Parent = LoadingBarBg
+
+local LoadingBarFill = Instance.new("Frame")
+LoadingBarFill.Size = UDim2.new(0, 0, 1, 0)
+LoadingBarFill.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+LoadingBarFill.BorderSizePixel = 0
+LoadingBarFill.Parent = LoadingBarBg
+
+local CornerFill = Instance.new("UICorner")
+CornerFill.CornerRadius = UDim.new(1, 0)
+CornerFill.Parent = LoadingBarFill
+
+task.spawn(function()
+    StatusText.Text = "انترفاكس يقتحم"
+    task.wait(3)
+    StatusText.Text = "الهاشمي عمك"
+    task.wait(3)
+    StatusText.Text = "الهاشمي بعيونه حسنين الحزين"
+    task.wait(3)
+    StatusText.Text = "لعيون كابوس الروسي"
+    task.wait(3)
+end)
+
+task.spawn(function()
+    for i = 1, 100 do
+        PercentText.Text = i .. "%"
+        task.wait(12 / 100)
+    end
+end)
+
+TweenService:Create(LoadingBarFill, TweenInfo.new(12, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)}):Play()
+task.wait(12)
+
+LoadingScreen:Destroy()
+
+-- ==========================================
+-- 2. زر فتح وقفل الواجهة
+-- ==========================================
+local ToggleButton = Instance.new("TextButton")
+ToggleButton.Size = UDim2.new(0, 130, 0, 42)
+ToggleButton.Position = UDim2.new(0, 15, 0.5, -21)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+ToggleButton.BorderColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.Text = "INTERFAX"
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.TextSize = 15
+ToggleButton.Font = Enum.Font.GothamBold
+ToggleButton.Parent = ScreenGui
+
+local ToggleCorner = Instance.new("UICorner")
+ToggleCorner.CornerRadius = UDim.new(0, 6)
+ToggleCorner.Parent = ToggleButton
+
+-- ==========================================
+-- 3. الواجهة الرئيسية (Main UI)
+-- ==========================================
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 560, 0, 390)
+MainFrame.Position = UDim2.new(0.5, -280, 0.5, -195)
+MainFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+MainFrame.BorderColor3 = Color3.fromRGB(255, 255, 255)
+MainFrame.ClipsDescendants = true
+MainFrame.Visible = false
+MainFrame.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 8)
+MainCorner.Parent = MainFrame
+
+-- حاوية الأيدي المتحركة (نفس حجم وحركة شاشة الانتظار)
+local MainHandsContainer = Instance.new("Frame")
+MainHandsContainer.Size = UDim2.new(0, 320, 0, 160)
+MainHandsContainer.Position = UDim2.new(0, 195, 0.5, -100)
+MainHandsContainer.BackgroundTransparency = 1
+MainHandsContainer.Parent = MainFrame
+
+local MainLeftHand = Instance.new("ImageLabel")
+MainLeftHand.Size = UDim2.new(0, 140, 0, 140)
+MainLeftHand.Position = UDim2.new(0, -30, 0, 0)
+MainLeftHand.BackgroundTransparency = 1
+MainLeftHand.Image = LeftHandAsset
+MainLeftHand.Parent = MainHandsContainer
+
+local MainRightHand = Instance.new("ImageLabel")
+MainRightHand.Size = UDim2.new(0, 140, 0, 140)
+MainRightHand.Position = UDim2.new(1, -90, 0, 0)
+MainRightHand.BackgroundTransparency = 1
+MainRightHand.Image = RightHandAsset
+MainRightHand.Parent = MainHandsContainer
+
+task.spawn(function()
+    while true do
+        MainLeftHand.Position = UDim2.new(0, -30, 0, 0)
+        MainRightHand.Position = UDim2.new(1, -90, 0, 0)
+        
+        local mtw1 = TweenService:Create(MainLeftHand, TweenInfo.new(1.5, Enum.EasingStyle.Sine), {Position = UDim2.new(0.5, -135, 0, 0)})
+        local mtw2 = TweenService:Create(MainRightHand, TweenInfo.new(1.5, Enum.EasingStyle.Sine), {Position = UDim2.new(0.5, -5, 0, 0)})
+        mtw1:Play()
+        mtw2:Play()
+        mtw2.Completed:Wait()
+        
+        task.wait(0.5)
+        
+        local mback1 = TweenService:Create(MainLeftHand, TweenInfo.new(1.5, Enum.EasingStyle.Sine), {Position = UDim2.new(0, -30, 0, 0)})
+        local mback2 = TweenService:Create(MainRightHand, TweenInfo.new(1.5, Enum.EasingStyle.Sine), {Position = UDim2.new(1, -90, 0, 0)})
+        mback1:Play()
+        mback2:Play()
+        mback2.Completed:Wait()
+        
+        task.wait(0.3)
+    end
+end)
+
+-- حقوق المطور والنصوص أسفل الأيدي
+local DevInfoText = Instance.new("TextLabel")
+DevInfoText.Size = UDim2.new(0, 320, 0, 100)
+DevInfoText.Position = UDim2.new(0, 195, 0.5, 65)
+DevInfoText.BackgroundTransparency = 1
+DevInfoText.Text = "اسم السكربت: INTERFAX\n\nالمطور: الهاشمي\n\nتليجرام: YNSMA10@ / تيك توك: ai_bx.0@"
+DevInfoText.TextColor3 = Color3.fromRGB(255, 255, 255)
+DevInfoText.TextSize = 13
+DevInfoText.Font = Enum.Font.GothamBold
+DevInfoText.TextWrapped = true
+DevInfoText.TextXAlignment = Enum.TextXAlignment.Center
+DevInfoText.Parent = MainFrame
+
+local MainTitle = Instance.new("TextLabel")
+MainTitle.Size = UDim2.new(1, 0, 0, 40)
+MainTitle.Position = UDim2.new(0, 0, 0, 10)
+MainTitle.BackgroundTransparency = 1
+MainTitle.Text = "INTERFAX"
+MainTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+MainTitle.TextSize = 20
+MainTitle.Font = Enum.Font.GothamBold
+MainTitle.Parent = MainFrame
+
+local CloseButton = Instance.new("TextButton")
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -40, 0, 10)
+CloseButton.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.TextSize = 14
+CloseButton.Font = Enum.Font.GothamBold
+CloseButton.Parent = MainFrame
+
+local CloseCorner = Instance.new("UICorner")
+CloseCorner.CornerRadius = UDim.new(0, 4)
+CloseCorner.Parent = CloseButton
+
+-- ==========================================
+-- 4. القوائم الـ 8
+-- ==========================================
+local Sidebar = Instance.new("ScrollingFrame")
+Sidebar.Size = UDim2.new(0, 160, 0, 315)
+Sidebar.Position = UDim2.new(0, 15, 0, 60)
+Sidebar.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+Sidebar.BorderSizePixel = 0
+Sidebar.CanvasSize = UDim2.new(0, 0, 0, 370)
+Sidebar.Parent = MainFrame
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Padding = UDim.new(0, 6)
+UIListLayout.Parent = Sidebar
+
+local ContentContainer = Instance.new("Frame")
+ContentContainer.Size = UDim2.new(0, 180, 0, 315)
+ContentContainer.Position = UDim2.new(0, 185, 0, 60)
+ContentContainer.BackgroundTransparency = 1
+ContentContainer.Parent = MainFrame
+
+local ContentText = Instance.new("TextLabel")
+ContentText.Size = UDim2.new(1, 0, 1, 0)
+ContentText.BackgroundTransparency = 1
+ContentText.TextColor3 = Color3.fromRGB(255, 255, 255)
+ContentText.TextSize = 13
+ContentText.Font = Enum.Font.Gotham
+ContentText.TextWrapped = true
+ContentText.TextXAlignment = Enum.TextXAlignment.Right
+ContentText.TextYAlignment = Enum.TextYAlignment.Top
+ContentText.Visible = false
+ContentText.Parent = ContentContainer
+
+local menus = {
+    "1. حقوق المطور",
+    "2. قريباً",
+    "3. قريباً",
+    "4. قريباً",
+    "5. قريباً",
+    "6. قريباً",
+    "7. قريباً",
+    "8. قريباً"
+}
+
+for i, menuName in ipairs(menus) do
+    local MenuBtn = Instance.new("TextButton")
+    MenuBtn.Size = UDim2.new(1, -10, 0, 35)
+    MenuBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    MenuBtn.Text = menuName
+    MenuBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    MenuBtn.TextSize = 13
+    MenuBtn.Font = Enum.Font.GothamBold
+    MenuBtn.LayoutOrder = i
+    MenuBtn.Parent = Sidebar
+    
+    local BtnCorner = Instance.new("UICorner")
+    BtnCorner.CornerRadius = UDim.new(0, 4)
+    BtnCorner.Parent = MenuBtn
+    
+    MenuBtn.MouseButton1Click:Connect(function()
+        if i == 1 then
+            MainHandsContainer.Visible = true
+            DevInfoText.Visible = true
+            ContentText.Visible = false
+        else
+            MainHandsContainer.Visible = false
+            DevInfoText.Visible = false
+            ContentText.Visible = true
+            ContentText.Text = "هذه القائمة قريباً... ⏳"
+        end
+    end)
+end
+
+-- الوضع الافتراضي عند فتح الواجهة
+MainHandsContainer.Visible = true
+DevInfoText.Visible = true
+ContentText.Visible = false
+
+local isOpen = false
+ToggleButton.MouseButton1Click:Connect(function()
+    isOpen = not isOpen
+    MainFrame.Visible = isOpen
+end)
+
+CloseButton.MouseButton1Click:Connect(function()
+    isOpen = false
+    MainFrame.Visible = false
+end)
